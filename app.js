@@ -15,7 +15,7 @@ app.use("/usersecrets", router)
 
 mongoose
     .connect(
-    "mongodb+srv://likhith2003:harekrsna@aiyogi.fd0ejdt.mongodb.net/?retryWrites=true&w=majority"
+        "mongodb+srv://likhith2003:harekrsna@aiyogi.fd0ejdt.mongodb.net/?retryWrites=true&w=majority"
 )
     .then(()=>
     app.listen(5000, () => console.log("db connected on 5000"))
