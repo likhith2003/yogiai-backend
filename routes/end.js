@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
-
+const {authenticate} = require('../middleware/auth');
 const User = require('../models/user');
 const keys = require('../config/keys');
 const router = express.Router();
@@ -33,8 +33,7 @@ router.post("/", (req, res) => {
               .then((user) => {
                 const payload = {
                   id: user.id,
-                  name: user.name,
-                  email: user.email,
+                  email: user.email
                 };
 
                 jwt.sign(
@@ -70,7 +69,7 @@ router.post("/login", (req, res) => {
       if (user) {
         bcrypt.compare(password, user.password).then((matches) => {
           if (matches) {
-            const payload = { id: user.id, name: user.name, email: user.email };
+            const payload = { id: user.id, email: user.email };
 
             jwt.sign(
               payload,
@@ -106,5 +105,13 @@ router.get(
       });
     }
   );
+
+
+router.post("/start", authenticate, (req, res) => {
+    let errors = {};
+    
+    console.log(req.body)
+}
+);
 
 module.exports = router;

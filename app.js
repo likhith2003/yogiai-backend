@@ -12,6 +12,7 @@ app.use(bodyParser.json())
 app.use("/", router)
 app.use("/login", router)
 app.use("/usersecrets", router)
+app.use("/start", router)
 
 mongoose
     .connect(
