@@ -6,6 +6,8 @@ const {authenticate} = require('../middleware/auth');
 const User = require('../models/user');
 const keys = require('../config/keys');
 const router = express.Router();
+const checksss = require('../middleware/checks');
+const checkcontroller = require('../controller/checkcontroller');
 
 router.post("/", (req, res) => {
   let errors = {};
@@ -107,11 +109,6 @@ router.get(
   );
 
 
-router.post("/start", authenticate, (req, res) => {
-    let errors = {};
-    
-    console.log(req.body)
-}
-);
 
+router.post('/start',authenticate, checksss.single('checkfiles'),checkcontroller.checksforfile);
 module.exports = router;

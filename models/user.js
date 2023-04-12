@@ -23,7 +23,11 @@ const UserSchema = new Schema({
   username: {
         type: String,
         required: false
-    }
+  },
+  checkfiles: {
+    type: String,
+    required: false
+  }
   
 });
 

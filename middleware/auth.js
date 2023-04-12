@@ -5,6 +5,7 @@ const {secretOrKey} = require('../config/keys');
 async function authenticate (req, res, next) {
     try {
         const token = req.header('Authorization').replace(/^Bearer\s+/, "");
+        console.log(req.header('Authorization'))
 
         // const token = req.bo dy.token;
 
@@ -17,7 +18,7 @@ async function authenticate (req, res, next) {
         const decoded = await jwt.verify(token, secretOrKey, (err, decoded) => {
             if (err && err.message === "jwt expired") 
                 throw new Error("Authentication Failed. Please Logout And Login Again.");
-            
+            console.log("after auth")
             return decoded;
             
         });
@@ -33,7 +34,6 @@ async function authenticate (req, res, next) {
 
         req.body.user = user;
         req.body.token = token;
-
         next();
     } catch (error) {
         console.log(error.message);
