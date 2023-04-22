@@ -12,7 +12,7 @@ app.use(bodyParser.json())
 app.use("/", router)
 app.use("/login", router)
 app.use("/usersecrets", router)
-app.use("/start", router)
+app.use("/s3",router)
 mongoose
     .connect(
         "mongodb+srv://likhith2003:harekrsna@aiyogi.fd0ejdt.mongodb.net/?retryWrites=true&w=majority"

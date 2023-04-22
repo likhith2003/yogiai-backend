@@ -6,9 +6,11 @@ const {authenticate} = require('../middleware/auth');
 const User = require('../models/user');
 const keys = require('../config/keys');
 const router = express.Router();
-const checksss = require('../middleware/checks');
-const checkcontroller = require('../controller/checkcontroller');
 
+require("dotenv").config();
+const multer = require("multer");
+const { s3Uploadv2, s3Uploadv3 } = require("../controller/s3Service"); 
+const uuid = require("uuid").v4;
 router.post("/", (req, res) => {
   let errors = {};
    console.log(req.body)
@@ -108,7 +110,52 @@ router.get(
     }
   );
 
+const storage = multer.memoryStorage();
 
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype.split("/")[0] === "image") {
+    cb(null, true);
+  } else {
+    cb(new multer.MulterError("LIMIT_UNEXPECTED_FILE"), false);
+  }
+};
 
-router.post('/start',authenticate, checksss.single('checkfiles'),checkcontroller.checksforfile);
+const upload = multer({
+  storage,
+  fileFilter,
+  limits: { fileSize: 1000000000, files: 4 },
+});
+
+router.post("/s3",authenticate, upload.array("file"), async (req, res) => {
+  try {
+    const results = await s3Uploadv3(req.files);
+    console.log(results);
+    return res.json({ status: "success" });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+router.use((error, req, res, next) => {
+  if (error instanceof multer.MulterError) {
+    if (error.code === "LIMIT_FILE_SIZE") {
+      return res.status(400).json({
+        message: "file is too large",
+      });
+    }
+
+    if (error.code === "LIMIT_FILE_COUNT") {
+      return res.status(400).json({
+        message: "File limit reached",
+      });
+    }
+
+    if (error.code === "LIMIT_UNEXPECTED_FILE") {
+      return res.status(400).json({
+        message: "File must be an image",
+      });
+    }
+  }
+});
+
 module.exports = router;
