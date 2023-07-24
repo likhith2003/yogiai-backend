@@ -1,1 +1,2 @@
-## SOON
+- A simple code which sets up backend logic for authentication, authorization and middleware.
+- Built as a part of a semester project.
